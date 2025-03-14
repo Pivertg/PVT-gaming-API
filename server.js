@@ -1,13 +1,18 @@
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 5000;  // S'assurer que le port est bien défini ici
 
-// Route API de base
+// Route de base pour la page d'accueil
+app.get('/', (req, res) => {
+    res.send('Bienvenue sur le serveur PVT-gaming API !');
+});
+
+// Route API
 app.get('/api', (req, res) => {
     res.json({ message: 'Bienvenue sur l\'API PVT-gaming!' });
 });
 
-// Démarre le serveur
+// Lancement du serveur
 app.listen(port, () => {
-    console.log(`Serveur écoutant sur http://localhost:${port}`);
+    console.log(`Serveur en ligne sur http://localhost:${port}`);
 });
