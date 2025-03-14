@@ -11,11 +11,7 @@
   },
   "devDependencies": {},
   "engines": {
-<<<<<<< HEAD
-    "node": "14.x"
-=======
     "node": "22.x"
->>>>>>> b86aad2ee9a36b07067add26f2f8901c1eed41b1
   },
   "author": "",
   "license": "ISC"
