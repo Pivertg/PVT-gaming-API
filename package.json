@@ -1,13 +1,18 @@
 {
-  "name": "mon-backend-api",
+  "name": "pvt-gaming-api",
   "version": "1.0.0",
+  "description": "API pour PVT Gaming",
+  "main": "server.js",
   "scripts": {
-    "dev": "vercel dev",
-    "start": "node api/monApi.js"
+    "start": "node server.js"
   },
   "dependencies": {
-    "axios": "^0.24.0",
-    "cors": "^2.8.5",
-    "express": "^4.21.2"
-  }
+    "express": "^4.17.1"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": "14.x"
+  },
+  "author": "",
+  "license": "ISC"
 }
