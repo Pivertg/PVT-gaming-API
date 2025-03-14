@@ -1,1 +1,13 @@
-
+{
+  "name": "mon-backend-api",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "start": "vercel start"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "cors": "^2.8.5"
+  }
+}
