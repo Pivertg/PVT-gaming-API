@@ -20,3 +20,9 @@ app.post('/api/data', (req, res) => {
 app.listen(port, () => {
   console.log(`Serveur en ligne sur http://localhost:${port}`);
 });
+// Middleware de gestion des erreurs
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Quelque chose a mal tourné!' });
+});
+
