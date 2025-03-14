@@ -37,3 +37,21 @@ mongoose.connect('mongodb://localhost:27017/monProjet', {
   console.log('Erreur de connexion à MongoDB:', err);
 });
 
+const utilisateurSchema = new mongoose.Schema({
+  nom: String,
+  email: String,
+  motDePasse: String
+});
+
+const Utilisateur = mongoose.model('Utilisateur', utilisateurSchema);
+
+// Exemple d'ajout d'un utilisateur
+app.post('/api/utilisateur', async (req, res) => {
+  const { nom, email, motDePasse } = req.body;
+
+  const nouvelUtilisateur = new Utilisateur({ nom, email, motDePasse });
+  await nouvelUtilisateur.save();
+  res.json({ message: 'Utilisateur ajouté', utilisateur: nouvelUtilisateur });
+});
+
+
