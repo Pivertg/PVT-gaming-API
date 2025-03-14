@@ -2,8 +2,8 @@
   "name": "mon-backend-api",
   "version": "1.0.0",
   "scripts": {
-    "dev": "vercel dev",
-    "start": "vercel start"
+    "dev": "vercel dev",        // Pour le développement en local (optionnel)
+    "start": "node api/monApi.js"
   },
   "dependencies": {
     "axios": "^0.24.0",
