@@ -1,2 +1,19 @@
-node_modules/ 
-.env 
+# 📂 Ignorer le dossier node_modules (dépendances)
+node_modules/
+
+# 🔑 Ignorer les fichiers contenant des clés API et des variables d’environnement
+.env
+
+# 🗑 Ignorer les fichiers de logs
+logs/
+*.log
+
+# 🚀 Ignorer les fichiers de déploiement Vercel (si nécessaire)
+.vercel/
+
+# ⚙ Ignorer les fichiers spécifiq.gitignoreues à l’éditeur VS Code
+.vscode/
+
+# ⛔ Ignorer les fichiers temporaires système (macOS, Windows)
+.DS_Store
+Thumbs.db
