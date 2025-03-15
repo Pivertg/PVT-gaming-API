@@ -3,7 +3,7 @@ const express = require('express');
 const axios = require('axios');
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 // Récupération de la clé API depuis le fichier .env
 const API_KEY = process.env.API_KEY;
