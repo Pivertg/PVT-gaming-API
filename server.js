@@ -4,21 +4,21 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 🔥 Configuration correcte de CORS
-const corsOptions = {
-    origin: "*", // Met "*" pour autoriser tout ou "https://pivertg.github.io" uniquement
-    methods: "GET,POST,PUT,DELETE,OPTIONS",
-    allowedHeaders: "Content-Type,Authorization"
-};
-app.use(cors(corsOptions));
+// 🔥 Active CORS pour toutes les origines
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json());
 
-// 🚀 ROUTES
+// 🚀 Test API pour voir si elle fonctionne
 app.get("/", (req, res) => {
-    res.send("🚀 API PVT Gaming est en ligne !");
+    res.send("🚀 API PVT Gaming fonctionne !");
 });
 
-// 🟢 Récupérer tous les rosters
+// 🟢 Route pour récupérer tous les rosters
 app.get("/api/rosters", (req, res) => {
     const rosters = [
         { id: 1, nom: "Roster 1" },
@@ -28,14 +28,19 @@ app.get("/api/rosters", (req, res) => {
     res.json(rosters);
 });
 
-// 🟢 Récupérer les joueurs par roster
+// 🟢 Route pour récupérer les joueurs d’un roster
 app.get("/api/rosters/:rosterId", (req, res) => {
-    const rosterId = req.params.rosterId;
-    const joueursRoster = joueurs.filter(j => j.roster === rosterId);
-    res.json(joueursRoster);
+    const rosterId = parseInt(req.params.rosterId);
+    const joueurs = [
+        { id: 1, pseudo: "Joueur A", roster: 1 },
+        { id: 2, pseudo: "Joueur B", roster: 1 },
+        { id: 3, pseudo: "Joueur C", roster: 2 },
+        { id: 4, pseudo: "Joueur D", roster: 2 },
+        { id: 5, pseudo: "Joueur E", roster: 3 },
+        { id: 6, pseudo: "Joueur F", roster: 3 }
+    ];
+    const joueursFiltrés = joueurs.filter(j => j.roster === rosterId);
+    res.json(joueursFiltrés);
 });
 
-// 🚀 Lancer le serveur
-app.listen(PORT, () => {
-    console.log(`✅ Serveur lancé sur http://localhost:${PORT}`);
-});
+// 🚀 Lancement 
