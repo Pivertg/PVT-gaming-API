@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "pseudo": "Joueur1",
+    "idBrawlStars": "ABC123",
+    "trophies": 5000,
+    "roster": "Shelly, Colt, Bull"
+  },
+  {
+    "id": 2,
+    "pseudo": "Joueur2",
+    "idBrawlStars": "DEF456",
+    "trophies": 6200,
+    "roster": "Dynamike, Rico, Brock"
+  }
+]
