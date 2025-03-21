@@ -20,9 +20,9 @@ let joueurs = [
 ];
 
 // 🟢 Route pour récupérer un seul joueur par ID
-app.get("/api/joueurs/:id", (req, res) => {
-    const joueurId = parseInt(req.params.id);
-    const joueur = joueurs.find(j => j.id === joueurId);
+app.get("/api/joueurs/:id", (req, res) => { 
+    const id = parseInt(req.params.id);
+    const joueur = joueurs.find(j => j.id === id);
 
     if (!joueur) {
         return res.status(404).json({ message: "Joueur non trouvé !" });
@@ -30,6 +30,11 @@ app.get("/api/joueurs/:id", (req, res) => {
 
     res.json(joueur);
 });
+// pour récupéré tous le joueuer
+app.get("/api/joueurs", (req, res) => { 
+    res.json(joueurs); // Renvoie tous les joueurs
+});
+
 
 // 🟠 Route pour modifier un joueur
 app.put("/api/joueurs/:id", (req, res) => {
