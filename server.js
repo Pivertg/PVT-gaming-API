@@ -5,11 +5,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // 🔥 Active CORS pour toutes les origines
-app.use(cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+const corsOptions = {
+    origin: ["https://pivertg.github.io", "http://localhost:5500"], // Autorise GitHub Pages et Localhost
+    methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"]
-}));
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
