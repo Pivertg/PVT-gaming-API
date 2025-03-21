@@ -2,6 +2,13 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
+const corsOptions = {
+    origin: "https://pivertg.github.io", // Autorise uniquement ton site
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type"
+};
+app.use(cors(corsOptions));
+
 const PORT = process.env.PORT || 3000;
 
 // Middleware
