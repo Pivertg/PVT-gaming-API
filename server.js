@@ -1,48 +1,30 @@
-// ✅ Correction API (Node.js / Express)
+// ✅ API avec stockage en JSON
 const express = require("express");
 const cors = require("cors");
-const sqlite3 = require("sqlite3").verbose();
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-const db = new sqlite3.Database("database.db", (err) => {
-    if (err) {
-        console.error("❌ Erreur lors de l'ouverture de la base de données", err.message);
-    } else {
-        console.log("✅ Base de données SQLite connectée !");
-    }
-});
+const DATA_FILE = path.join(__dirname, "data.json");
 
-// Création des tables si elles n'existent pas
-db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS rosters (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nom TEXT
-    )`);
+// 🔹 Lire les données depuis data.json
+function lireDonnees() {
+    if (!fs.existsSync(DATA_FILE)) return { rosters: [] };
+    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+}
 
-    db.run(`CREATE TABLE IF NOT EXISTS joueurs (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        pseudo TEXT,
-        trophies INTEGER,
-        win3v3 INTEGER,
-        classement TEXT,
-        rangMax INTEGER,
-        rosterId INTEGER,
-        FOREIGN KEY (rosterId) REFERENCES rosters(id) ON DELETE CASCADE
-    )`);
-});
-
-// 🔹 Route de test API
-app.get("/api/ping", (req, res) => res.json({ message: "API en ligne !" }));
+// 🔹 Sauvegarder les données dans data.json
+function sauvegarderDonnees(data) {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+}
 
 // 🔹 Récupérer tous les rosters
 app.get("/api/rosters", (req, res) => {
-    db.all(`SELECT * FROM rosters`, [], (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
-    });
+    const data = lireDonnees();
+    res.json(data.rosters);
 });
 
 // 🔹 Ajouter un roster
@@ -50,35 +32,56 @@ app.post("/api/rosters", (req, res) => {
     const { nom } = req.body;
     if (!nom) return res.status(400).json({ error: "Le nom est requis" });
 
-    db.run(`INSERT INTO rosters (nom) VALUES (?)`, [nom], function (err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ id: this.lastID, nom });
-    });
+    const data = lireDonnees();
+    const newRoster = { id: Date.now(), nom, joueurs: [] };
+    data.rosters.push(newRoster);
+    sauvegarderDonnees(data);
+    res.json(newRoster);
+});
+
+// 🔹 Ajouter un joueur à un roster
+app.post("/api/rosters/:id/joueurs", (req, res) => {
+    const { pseudo, trophies, win3v3, classement, rangMax } = req.body;
+    const { id } = req.params;
+
+    const data = lireDonnees();
+    const roster = data.rosters.find(r => r.id == id);
+    if (!roster) return res.status(404).json({ error: "Roster non trouvé" });
+
+    const newJoueur = { id: Date.now(), pseudo, trophies, win3v3, classement, rangMax };
+    roster.joueurs.push(newJoueur);
+    sauvegarderDonnees(data);
+    res.json(newJoueur);
 });
 
 // 🔹 Récupérer les joueurs d'un roster
 app.get("/api/rosters/:id/joueurs", (req, res) => {
     const { id } = req.params;
-    db.all(`SELECT * FROM joueurs WHERE rosterId = ?`, [id], (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
-    });
+    const data = lireDonnees();
+    const roster = data.rosters.find(r => r.id == id);
+    if (!roster) return res.status(404).json({ error: "Roster non trouvé" });
+    res.json(roster.joueurs);
 });
 
-// 🔹 Ajouter un joueur
-app.post("/api/rosters/:id/joueurs", (req, res) => {
-    const { pseudo, trophies, win3v3, classement, rangMax } = req.body;
-    const { id } = req.params;
-    if (!pseudo || !trophies) return res.status(400).json({ error: "Champs requis" });
+// 🔹 Supprimer un joueur
+app.delete("/api/rosters/:rosterId/joueurs/:joueurId", (req, res) => {
+    const { rosterId, joueurId } = req.params;
+    const data = lireDonnees();
+    const roster = data.rosters.find(r => r.id == rosterId);
+    if (!roster) return res.status(404).json({ error: "Roster non trouvé" });
 
-    db.run(
-        `INSERT INTO joueurs (pseudo, trophies, win3v3, classement, rangMax, rosterId) VALUES (?, ?, ?, ?, ?, ?)`,
-        [pseudo, trophies, win3v3, classement, rangMax, id],
-        function (err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json({ id: this.lastID, pseudo, trophies, win3v3, classement, rangMax, rosterId: id });
-        }
-    );
+    roster.joueurs = roster.joueurs.filter(j => j.id != joueurId);
+    sauvegarderDonnees(data);
+    res.json({ message: "Joueur supprimé" });
+});
+
+// 🔹 Supprimer un roster
+app.delete("/api/rosters/:id", (req, res) => {
+    const { id } = req.params;
+    const data = lireDonnees();
+    data.rosters = data.rosters.filter(r => r.id != id);
+    sauvegarderDonnees(data);
+    res.json({ message: "Roster supprimé" });
 });
 
 // Lancement du serveur
